@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Divertido</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>Quiz de Conhecimentos Gerais</h1>
+        <div id="quiz">
+            <h2 id="pergunta">Qual é a capital do Brasil?</h2>
+            <div class="opcoes">
+                <button class="opcao" data-resposta="errada">Rio de Janeiro</button>
+                <button class="opcao" data-resposta="certa">Brasília</button>
+                <button class="opcao" data-resposta="errada">São Paulo</button>
+                <button class="opcao" data-resposta="errada">Belo Horizonte</button>
+            </div>
+            <p id="feedback"></p>
+            <button id="proxima-pergunta">Próxima Pergunta</button>
+        </div>
+    </div>
+
+    <script>
+        // Este é um script básico para o funcionamento do quiz
+        const perguntaElemento = document.getElementById('pergunta');
+        const opcoesContainer = document.querySelector('.opcoes');
+        const feedbackElemento = document.getElementById('feedback');
+        const proximaPerguntaBtn = document.getElementById('proxima-pergunta');
+
+        let perguntas = [
+            {
+                pergunta: "Qual é a capital da França?",
+                opcoes: [
+                    { texto: "Londres", correta: false },
+                    { texto: "Berlim", correta: false },
+                    { texto: "Paris", correta: true },
+                    { texto: "Madri", correta: false }
+                ]
+            },
+            {
+                pergunta: "Quantos planetas existem no nosso Sistema Solar (considerando Plutão um planeta anão)?",
+                opcoes: [
+                    { texto: "7", correta: false },
+                    { texto: "8", correta: true },
+                    { texto: "9", correta: false },
+                    { texto: "10", correta: false }
+                ]
+            },
+            {
+                pergunta: "Quem pintou a Mona Lisa?",
+                opcoes: [
+                    { texto: "Vincent van Gogh", correta: false },
+                    { texto: "Pablo Picasso", correta: false },
+                    { texto: "Leonardo da Vinci", correta: true },
+                    { texto: "Claude Monet", correta: false }
+                ]
+            }
+        ];
+
+        let perguntaAtualIndex = 0;
+
+        function carregarPergunta() {
+            const perguntaAtual = perguntas[perguntaAtualIndex];
+            perguntaElemento.textContent = perguntaAtual.pergunta;
+            opcoesContainer.innerHTML = ''; // Limpa as opções anteriores
+            feedbackElemento.textContent = '';
+            proximaPerguntaBtn.style.display = 'none';
+
+            perguntaAtual.opcoes.forEach(opcao => {
+                const button = document.createElement('button');
+                button.classList.add('opcao');
+                button.textContent = opcao.texto;
+                button.dataset.correta = opcao.correta; // Armazena se é a resposta correta
+                button.addEventListener('click', selecionarResposta);
+                opcoesContainer.appendChild(button);
+            });
+        }
+
+        function selecionarResposta(event) {
+            const selectedButton = event.target;
+            const isCorrect = selectedButton.dataset.correta === 'true';
+
+            if (isCorrect) {
+                feedbackElemento.textContent = 'Correto!';
+                feedbackElemento.style.color = 'green';
+            } else {
+                feedbackElemento.textContent = 'Errado. Tente novamente!';
+                feedbackElemento.style.color = 'red';
+            }
+
+            // Desabilita todos os botões após uma resposta
+            Array.from(opcoesContainer.children).forEach(button => {
+                button.disabled = true;
+                if (button.dataset.correta === 'true') {
+                    button.style.backgroundColor = '#90EE90'; // Destaca a resposta correta
+                }
+            });
+
+            proximaPerguntaBtn.style.display = 'block';
+        }
+
+        proximaPerguntaBtn.addEventListener('click', () => {
+            perguntaAtualIndex++;
+            if (perguntaAtualIndex < perguntas.length) {
+                carregarPergunta();
+            } else {
+                perguntaElemento.textContent = "Quiz Concluído!";
+                opcoesContainer.innerHTML = '';
+                feedbackElemento.textContent = '';
+                proximaPerguntaBtn.style.display = 'none';
+            }
+        });
+
+        // Carrega a primeira pergunta ao carregar a página
+        document.addEventListener('DOMContentLoaded', carregarPergunta);
+    </script>
+</body>
+</html>
